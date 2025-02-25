@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+/* src/App.css */
+
+.store-locator {
+  display: flex;
+  height: 100vh;
+}
+
+.store-locator-left {
+  width: 300px;
+  padding: 10px;
+  background-color: #f8f8f8;
+}
+
+.store-locator-right {
+  flex: 1;
+  position: relative;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+}

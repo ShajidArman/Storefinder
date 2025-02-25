@@ -1,0 +1,61 @@
+/* src/styles/StoreList.css */
+
+/* Overall Store List Container */
+.store-list {
+    padding: 15px;
+    text-align: left;
+  }
+  
+  /* No Stores Found Message */
+  .no-stores {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    padding: 10px;
+  }
+  
+  /* Store Items Container */
+  .store-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* Alternating Store Box Styles */
+  .store-box {
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Blue Background (Brand Color) with White Text */
+  .blue-bg {
+    background-color: #012F6C;
+    color: white;
+  }
+  
+  /* White Background with Black Text */
+  .white-bg {
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
+  }
+  
+  /* Store Titles */
+  .store-box h3 {
+    margin-bottom: 5px;
+    font-size: 18px;
+  }
+  
+  /* Store Details */
+  .store-box p {
+    margin: 3px 0;
+    font-size: 15px;
+  }
+  
+  /* Hover Effect */
+  .store-box:hover {
+    transform: scale(1.02);
+  }
+  
