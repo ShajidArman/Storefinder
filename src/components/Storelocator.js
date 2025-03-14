@@ -14,6 +14,7 @@ const storeLocations = [
     email: 'cecy_robles@live.com',
     lat: 21.8853,
     lng: -102.2916,
+    isExclusive: true, // ✅ Marked as exclusive
   },
   {
     id: 2,
@@ -23,6 +24,7 @@ const storeLocations = [
     email: 'cecy_robles@live.com',
     lat: 21.8847,
     lng: -102.2914,
+    isExclusive: false,
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ const storeLocations = [
     email: 'sales-suc-norte-1@imacags.com',
     lat: 21.8969,
     lng: -102.2920,
+    isExclusive: false,
   },
   {
     id: 4,
@@ -41,6 +44,7 @@ const storeLocations = [
     email: 'sales-suc-sur-1@imacags.com',
     lat: 21.8834,
     lng: -102.2925,
+    isExclusive: true, // ✅ Marked as exclusive
   },
   {
     id: 5,
@@ -50,6 +54,7 @@ const storeLocations = [
     email: 'festerprotomar2023@gmail.com',
     lat: 31.8667,
     lng: -116.5964,
+    isExclusive: true, // ✅ Marked as exclusive
   },
   {
     id: 6,
@@ -59,6 +64,7 @@ const storeLocations = [
     email: 'ssolutionsindustrial@gmail.com',
     lat: 32.6245,
     lng: -115.4523,
+    isExclusive: false,
   },
   {
     id: 7,
@@ -68,6 +74,7 @@ const storeLocations = [
     email: 'festerprotomar2023@gmail.com',
     lat: 32.6278,
     lng: -115.4421,
+    isExclusive: true, // ✅ Marked as exclusive
   },
   {
     id: 8,
@@ -77,51 +84,7 @@ const storeLocations = [
     email: 'suppliescachanilla@gmail.com , migue2684@hotmail.com',
     lat: 32.6501,
     lng: -115.4557,
-  },
-  {
-    id: 9,
-    name: 'Over The Cover',
-    address: 'BIT Center, Blvd. Diaz Ordaz #12415 Int. M5-17, Col. El Paraiso, CP 22106, Tijuana, BC',
-    phone: '(664) 155 7185',
-    email: 'hello@festerarrecife.com',
-    lat: 32.5149,
-    lng: -117.0382,
-  },
-  {
-    id: 10,
-    name: 'Low Festival',
-    address: 'Blvd. Federico Benitez Lopez #100-1, Col. El Pedregal Oeste, CP 22104, Tijuana, BC',
-    phone: '(664) 622 4587',
-    email: 'festerbaja@gmail.com',
-    lat: 32.5061,
-    lng: -117.0179,
-  },
-  {
-    id: 11,
-    name: 'Protomar',
-    address: 'Sancho Panza Street 3872, Col. Los Españoles CP 22104, Tijuana',
-    phone: '(664) 686 2027',
-    email: 'festerprotomar2023@gmail.com',
-    lat: 32.5106,
-    lng: -117.0335,
-  },
-  {
-    id: 12,
-    name: 'Fester Cape',
-    address: 'Jose Maria Morelos y Obregon, Downtown, Cabo San Lucas, CP 23450',
-    phone: '(624) 143 3868',
-    email: 'c.jerez@festerbcs.com',
-    lat: 22.8905,
-    lng: -109.9167,
-  },
-  {
-    id: 13,
-    name: 'Peace Festival',
-    address: 'Blvd. 5 de Febrero at the corner with Guillermo Prieto s/n, Nuevo Repueblo, La Paz, CP 23000',
-    phone: '(612) 122 8545',
-    email: 'c.jerez@festerbcs.com',
-    lat: 24.1426,
-    lng: -110.3108,
+    isExclusive: false,
   },
 ];
 
@@ -136,70 +99,93 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
         Math.cos((lat2 * Math.PI) / 180) *
         Math.sin(dLon / 2) ** 2;
     return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-  }
-  
-  const StoreLocator = () => {
-    const [userLocation, setUserLocation] = useState(null);
-    const [nearestStores, setNearestStores] = useState([]);
-    const [options, setOptions] = useState([]);
-    const [inputValue, setInputValue] = useState('');
-  
-    // Fetch location suggestions from OpenStreetMap Nominatim API
-    const handleSearchChange = async (value) => {
-      setInputValue(value); // Update input value
-  
-      if (value.length < 3) return; // Avoid unnecessary API calls for short input
-  
-      try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${value}`);
-        const data = await response.json();
-  
-        const locationOptions = data.map((place) => ({
-          value: { lat: parseFloat(place.lat), lng: parseFloat(place.lon) },
-          label: place.display_name,
-        }));
-  
-        setOptions(locationOptions);
-      } catch (error) {
-        console.error('Error fetching location suggestions:', error);
-      }
-    };
-  
-    // Handle location selection from dropdown
-    const handleLocationSelect = (selectedOption) => {
-      if (!selectedOption) return;
-  
-      const newLocation = selectedOption.value;
-      setUserLocation(newLocation);
-  
-      const storesWithDistance = storeLocations.map((store) => ({
-        ...store,
-        distance: haversineDistance(newLocation.lat, newLocation.lng, store.lat, store.lng),
+}
+
+const StoreLocator = () => {
+  const [userLocation, setUserLocation] = useState(null);
+  const [nearestStores, setNearestStores] = useState(storeLocations);
+  const [selectedStore, setSelectedStore] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [filterType, setFilterType] = useState('nearest'); // ✅ Default filter
+
+  const handleSearchChange = async (value) => {
+    setInputValue(value);
+    if (value.length < 3) return;
+
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${value}`);
+      const data = await response.json();
+
+      const locationOptions = data.map((place) => ({
+        value: { lat: parseFloat(place.lat), lng: parseFloat(place.lon) },
+        label: place.display_name,
       }));
-  
-      storesWithDistance.sort((a, b) => a.distance - b.distance);
-      setNearestStores(storesWithDistance);
-    };
-  
-    return (
-      <div className="store-locator">
-        <div className="store-locator-left">
-          <h2>Enter Your Location</h2>
-          <Select
-            placeholder="Type a location..."
-            inputValue={inputValue}
-            onInputChange={(value) => handleSearchChange(value)}
-            onChange={handleLocationSelect}
-            options={options}
-            isClearable
-          />
-          <StoreList stores={nearestStores} />
-        </div>
-        <div className="store-locator-right">
-          <MapView userLocation={userLocation} stores={nearestStores} />
-        </div>
-      </div>
-    );
+
+      setOptions(locationOptions);
+    } catch (error) {
+      console.error('Error fetching location suggestions:', error);
+    }
   };
-  
-  export default StoreLocator;
+
+  const handleLocationSelect = (selectedOption) => {
+    if (!selectedOption) return;
+
+    const newLocation = selectedOption.value;
+    setUserLocation(newLocation);
+
+    const storesWithDistance = storeLocations.map((store) => ({
+      ...store,
+      distance: haversineDistance(newLocation.lat, newLocation.lng, store.lat, store.lng),
+    }));
+
+    storesWithDistance.sort((a, b) => a.distance - b.distance);
+    setNearestStores(storesWithDistance);
+  };
+
+  // ✅ Click on store address to highlight it on the map
+  const handleStoreClick = (store) => {
+    setSelectedStore(store);
+  };
+
+  // ✅ Handle Filter Change
+  const handleFilterChange = (event) => {
+    const selectedFilter = event.target.value;
+    setFilterType(selectedFilter);
+
+    if (selectedFilter === 'exclusive') {
+      setNearestStores(storeLocations.filter((store) => store.isExclusive));
+    } else {
+      setNearestStores(storeLocations);
+    }
+  };
+
+  return (
+    <div className="store-locator">
+      <div className="store-locator-left">
+        <h2>Enter Your Location</h2>
+        <Select
+          placeholder="Type a location..."
+          inputValue={inputValue}
+          onInputChange={(value) => handleSearchChange(value)}
+          onChange={handleLocationSelect}
+          options={options}
+          isClearable
+        />
+
+        {/* ✅ Filter Dropdown */}
+        <select className="filter-dropdown" onChange={handleFilterChange} value={filterType}>
+          <option value="nearest">Nearest Stores</option>
+          <option value="exclusive">Exclusive Stores</option>
+        </select>
+
+        <StoreList stores={nearestStores} onStoreClick={handleStoreClick} />
+      </div>
+      <div className="store-locator-right">
+        <MapView userLocation={userLocation} stores={nearestStores} selectedStore={selectedStore} />
+      </div>
+    </div>
+  );
+};
+
+export default StoreLocator;

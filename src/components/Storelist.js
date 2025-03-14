@@ -1,29 +1,39 @@
 // src/components/StoreList.js
 
 import React from 'react';
-import '../styles/StoreList.css'; // Import CSS styles
+import '../styles/StoreList.css';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaStar } from 'react-icons/fa';
 
-const StoreList = ({ stores }) => {
+const StoreList = ({ stores, onStoreClick }) => {
   return (
     <div className="store-list">
-      {stores.length === 0 ? (
-        <p className="no-stores">No stores to display. Enter a location to find nearby stores.</p>
-      ) : (
-        <>
-          <h2>Nearest Stores</h2>
-          <div className="store-items">
-            {stores.map((store, index) => (
-              <div key={store.id} className={`store-box ${index % 2 === 0 ? 'blue-bg' : 'white-bg'}`}>
-                <h3>{store.name}</h3>
-                <p>{store.address}</p>
-                <p><strong>Phone:</strong> {store.phone}</p>
-                <p><strong>Email:</strong> {store.email}</p>
-                <p><strong>Distance:</strong> {store.distance.toFixed(2)} km</p>
+      <div className="store-items">
+        {stores.map((store) => (
+          <div 
+            key={store.id} 
+            className="store-box" 
+            onClick={() => onStoreClick(store)}
+          >
+            {/* ✅ Distance at Top Right */}
+            {store.distance && (
+              <div className="distance-container">
+                <FaMapMarkerAlt className="distance-icon" />
+                <span>{store.distance.toFixed(2)} km</span>
               </div>
-            ))}
+            )}
+
+            {/* ✅ Store Name with Gold Star for Exclusive Stores */}
+            <h3>
+              {store.isExclusive && <FaStar className="gold-star" />} {/* ⭐ Gold Star */}
+              {store.name}
+            </h3>
+
+            <p>{store.address}</p>
+            <p><FaPhone className="icon" /> {store.phone}</p>
+            <p><FaEnvelope className="icon" /> <a href={`mailto:${store.email}`} className="email-link">{store.email}</a></p>
           </div>
-        </>
-      )}
+        ))}
+      </div>
     </div>
   );
 };

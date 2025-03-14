@@ -5,79 +5,72 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// ✅ Fix for missing Leaflet markers
+// ✅ Import default Leaflet marker icons
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 
-// Ensure Leaflet Uses Correct Default Icons in React
+// ✅ Fix Leaflet's missing marker issue
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: markerIconPng,
   shadowUrl: markerShadowPng,
 });
 
-// ✅ Custom Red Marker for User Location
-const userIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-red.png',
+// ✅ Create a custom red marker by adjusting default Leaflet marker
+const selectedStoreIcon = new L.Icon({
+  iconUrl: markerIconPng, // ✅ Uses default blue marker
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
+  shadowUrl: markerShadowPng,
+  className: "red-marker", // ✅ Apply CSS filter
 });
 
-// ✅ Default Blue Marker for Store Locations
+// ✅ Default Blue Marker for Other Stores
 const storeIcon = new L.Icon({
   iconUrl: markerIconPng,
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
+  shadowUrl: markerShadowPng,
 });
 
-const MapView = ({ userLocation, stores }) => {
+const MapView = ({ userLocation, stores, selectedStore }) => {
   const mapRef = useRef(null);
 
-  // Function to update the map view dynamically when user enters location
+  // ✅ Ensure Map Recenters Correctly
   const UpdateMapView = () => {
     const map = useMap();
     useEffect(() => {
-      if (userLocation) {
-        map.setView([userLocation.lat, userLocation.lng], 12); // Zoom to user location
+      if (selectedStore) {
+        map.setView([selectedStore.lat, selectedStore.lng], 14, { animate: true });
+      } else if (userLocation) {
+        map.setView([userLocation.lat, userLocation.lng], 12);
+      } else if (stores.length > 0) {
+        const bounds = L.latLngBounds(stores.map(store => [store.lat, store.lng]));
+        map.fitBounds(bounds, { padding: [50, 50] });
       }
-    }, [userLocation, map]);
+    }, [selectedStore, userLocation, stores, map]);
     return null;
   };
 
   return (
-    <div className="map-container">
-      <MapContainer ref={mapRef} center={[21.8853, -102.2916]} zoom={6} style={{ height: '100%', width: '100%' }}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+    <MapContainer ref={mapRef} center={[21.8853, -102.2916]} zoom={6} style={{ height: '100%', width: '100%' }}>
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <UpdateMapView />
+      
+      {/* ✅ Show store markers, highlight selected store */}
+      {stores.map((store) => (
+        <Marker 
+          key={store.id} 
+          position={[store.lat, store.lng]} 
+          icon={selectedStore?.id === store.id ? selectedStoreIcon : storeIcon} // ✅ Fix: Highlight selected marker
+        >
+          <Popup><strong>{store.name}</strong><br />{store.address}</Popup>
+        </Marker>
+      ))}
 
-        {/* Automatically update the map view when userLocation changes */}
-        <UpdateMapView />
-
-        {/* Show all store markers from the start */}
-        {stores.map((store) => (
-          <Marker key={store.id} position={[store.lat, store.lng]} icon={storeIcon}>
-            <Popup>
-              <strong>{store.name}</strong>
-              <br />
-              {store.address}
-              <br />
-              <strong>Distance:</strong> {store.distance?.toFixed(2)} km
-            </Popup>
-          </Marker>
-        ))}
-
-        {/* Show user location with a red marker */}
-        {userLocation && (
-          <Marker position={[userLocation.lat, userLocation.lng]} icon={userIcon}>
-            <Popup><strong>You are here</strong></Popup>
-          </Marker>
-        )}
-      </MapContainer>
-    </div>
+    </MapContainer>
   );
 };
 

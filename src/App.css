@@ -38,6 +38,12 @@
 }
 
 /* src/App.css */
+/* Apply Helvetica Neue Globally */
+body {
+  font-family: 'Futura', sans-serif;
+}
+
+
 
 .store-locator {
   display: flex;

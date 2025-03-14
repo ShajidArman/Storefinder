@@ -11,3 +11,6 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.leaflet-marker-icon.red-marker {
+  filter: hue-rotate(230deg) brightness(1.2); /* ✅ Adjust hue to red */
+}
