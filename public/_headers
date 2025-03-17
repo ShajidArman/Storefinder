@@ -1,0 +1,16 @@
+/* ✅ Security Headers */
+
+/* ✅ Allow embedding ONLY on your website */
+Content-Security-Policy: frame-ancestors 'self' https://www.fester.com.mx;
+
+/* ✅ Allow scripts from self */
+Content-Security-Policy: script-src 'self' 'unsafe-inline';
+
+/* ✅ Prevent MIME-type sniffing */
+X-Content-Type-Options: nosniff
+
+/* ✅ Hide referrer data */
+Referrer-Policy: no-referrer-when-downgrade
+
+/* ✅ Prevent unauthorized cross-domain policies */
+X-Permitted-Cross-Domain-Policies: none
