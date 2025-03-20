@@ -8,15 +8,27 @@
     <meta name="description" content="Web site created using create-react-app" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    
-    <!-- ✅ Block Direct Access to This Page -->
+
+    <!-- ✅ Allow Only fester.com.mx -->
     <script>
-      if (window.self !== window.top && !document.referrer.includes("fester.com.mx")) {
-        window.location.href = "about:blank"; // ❌ Block iframe access from unauthorized sites
-      }
+      setTimeout(() => {
+        if (window.self !== window.top) {
+          try {
+            const referer = document.referrer || "";
+            const isAllowed = referer.includes("fester.com.mx");
+
+            if (!isAllowed) {
+              document.body.innerHTML = "<h1>Access Denied</h1>"; // ❌ Block Unauthorized Users
+              throw new Error("Blocked unauthorized iframe access.");
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }, 500); // ✅ Short delay for Safari to load referrer properly
     </script>
 
-    <!-- ✅ Disable Right-Click & DevTools -->
+    <!-- ✅ Disable Right-Click & Basic DevTools Blocking -->
     <script>
       document.addEventListener("contextmenu", (event) => event.preventDefault());
 
@@ -25,50 +37,12 @@
           event.preventDefault();
         }
       });
-
-      function detectDevTools() {
-        const threshold = 160;
-        const widthThreshold = 800;
-
-        setInterval(() => {
-          if (
-            window.outerHeight - window.innerHeight > threshold ||
-            window.outerWidth - window.innerWidth > widthThreshold
-          ) {
-            alert("DevTools detected! Closing page...");
-            window.location.href = "about:blank";
-          }
-        }, 1000);
-      }
-
-      detectDevTools();
-    </script>
-
-    <!-- ✅ Additional DevTools Detection (Prevents Console Access) -->
-    <script>
-      (function() {
-        let devtools = { open: false, orientation: null };
-        const threshold = 160;
-
-        setInterval(function() {
-          const widthDiff = window.outerWidth - window.innerWidth;
-          const heightDiff = window.outerHeight - window.innerHeight;
-          const isOpen = widthDiff > threshold || heightDiff > threshold;
-
-          if (isOpen && !devtools.open) {
-            alert("DevTools detected! Closing page...");
-            window.location.href = "about:blank";
-          }
-
-          devtools.open = isOpen;
-        }, 500);
-      })();
     </script>
 
     <!-- ✅ Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self';">
-    
-    <title>React App</title>
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://www.fester.com.mx;">
+
+    <title>Secure Store Locator</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

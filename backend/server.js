@@ -7,13 +7,12 @@ const port = process.env.PORT || 8080; // ✅ Use environment variable for flexi
 // ✅ Allow Only Your Website to Access the API
 const allowedOrigins = [
   "http://localhost:3000", // ✅ For local development
-  "https://wonderful-panda-3259de.netlify.app", // ✅ Your Netlify site
   "https://www.fester.com.mx" // ✅ Your actual website
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || !origin) {  // ✅ Fix: Allow same-origin requests
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -25,7 +24,8 @@ app.use(cors({
 app.get('/get-iframe-url', (req, res) => {
   // Security: Check referer (Only allow from your site)
   const referer = req.get('referer') || "";
-  if (!referer.includes("fester.com.mx")) {
+  
+  if (!referer.startsWith("https://www.fester.com.mx")) {  // ✅ Fix: Stricter check
     return res.status(403).json({ error: "Unauthorized access" });
   }
 

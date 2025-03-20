@@ -4,10 +4,21 @@ const IframeLoader = () => {
   const [iframeURL, setIframeURL] = useState("");
   const [error, setError] = useState(false);
 
+  // ✅ Use the deployed backend URL
+  const backendURL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:8080" // ✅ Local development
+      : "https://storefinder.onrender.com"; // ✅ Your live backend on Render
+
   useEffect(() => {
     const fetchIframeURL = async () => {
       try {
-        const response = await fetch("https://your-backend-url.com/get-iframe-url"); // ✅ Replace with your backend URL
+        const response = await fetch(`${backendURL}/get-iframe-url`);
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch iframe URL");
+        }
+
         const data = await response.json();
 
         if (data.iframeURL) {
@@ -22,7 +33,7 @@ const IframeLoader = () => {
     };
 
     fetchIframeURL();
-  }, []);
+  }, [backendURL]);
 
   return (
     <div>
