@@ -155,3 +155,18 @@
     background-color: #f0f0f0;
 }
 
+.store-links {
+    display: flex;
+    gap: 15px; /* space between links */
+    padding-left: 15px; /* align with other content */
+    margin-top: 5px;
+  }
+  
+  .store-links a {
+    color: #012F6C; /* brand color */
+    font-weight: 500;
+    text-decoration: underline;
+    font-size: 14px;
+  }
+  
+

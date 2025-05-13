@@ -14,7 +14,7 @@ const storeLocations = [
     email: 'cecy_robles@live.com',
     lat: 21.8853,
     lng: -102.2916,
-    isExclusive: true, // ✅ Marked as exclusive
+    isExclusive: false, // 
   },
   {
     id: 2,
@@ -44,7 +44,7 @@ const storeLocations = [
     email: 'sales-suc-sur-1@imacags.com',
     lat: 21.8834,
     lng: -102.2925,
-    isExclusive: true, // ✅ Marked as exclusive
+    isExclusive: false, // 
   },
   {
     id: 5,
@@ -54,7 +54,7 @@ const storeLocations = [
     email: 'festerprotomar2023@gmail.com',
     lat: 31.8667,
     lng: -116.5964,
-    isExclusive: true, // ✅ Marked as exclusive
+    isExclusive: false, // 
   },
   {
     id: 6,
@@ -75,6 +75,8 @@ const storeLocations = [
     lat: 32.6278,
     lng: -115.4421,
     isExclusive: true, // ✅ Marked as exclusive
+    website: 'https://protomar.com/categoria-producto/marcas/fester/', // 🔗 Add this
+    googleMapsUrl: 'https://maps.app.goo.gl/6LwuyvSGSY7ohMj19' 
   },
   {
     id: 8,
@@ -85,6 +87,42 @@ const storeLocations = [
     lat: 32.6501,
     lng: -115.4557,
     isExclusive: false,
+  },
+  {
+    id: 9,
+    name: 'Abinco - Fester Store National Highway',
+    address: 'National Highway Km 258, Plaza La Misión 328-Local 5, Plaza La Misión, 67303, Santiago',
+    phone: '+528186699500',
+    email: 'suppliescachanilla@gmail.com ', // add if available
+    lat: 25.521895764293145, // placeholder latitude
+    lng:  -100.18362555392221, // placeholder longitude
+    isExclusive: true,
+    website: 'https://www.abinco.com.mx/', // 🔗 Add this
+    googleMapsUrl: 'https://maps.app.goo.gl/bCk2wi4Z5LKEjuoi6' 
+  },
+  {
+    id: 10,
+    name: 'Abinco - Fester Escobedo Store',
+    address: 'Highway to Colombia 905, Los Altos, 66052, Escobedo',
+    phone: '+528110867187',
+    email: 'suppliescachanilla@gmail.com ', // add if available
+    lat: 25.7962, // placeholder latitude
+    lng: -100.3216, // placeholder longitude
+    isExclusive: true,
+    website: 'https://www.abinco.com.mx/', // 🔗 Add this
+    googleMapsUrl: 'https://maps.app.goo.gl/Lhou9Kma1bCX86Vx6' 
+  },
+  {
+    id: 11,
+    name: 'Abinco - Fester Miguel Alemán Store',
+    address: 'Av. Miguel Alemán 820, La Talaverna, 66473, San Nicolas de los Garza',
+    phone: '+528183276750',
+    email: 'suppliescachanilla@gmail.com ', // add if available
+    lat: 25.7285, // placeholder latitude
+    lng: -100.2800, // placeholder longitude
+    isExclusive: true,
+    website: 'https://www.abinco.com.mx/', // 🔗 Add this
+    googleMapsUrl: 'https://maps.app.goo.gl/1svrChadQVCR7E457' 
   },
 ];
 

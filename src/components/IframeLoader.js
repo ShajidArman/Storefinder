@@ -37,9 +37,9 @@ const IframeLoader = () => {
 
   return (
     <div>
-      <h2>Secure Iframe</h2>
+      <h2></h2>
       {error ? (
-        <p style={{ color: "red" }}>⚠️ Error loading iframe. Check console.</p>
+        <p style={{ color: "red" }}></p>
       ) : iframeURL ? (
         <iframe
           src={iframeURL}

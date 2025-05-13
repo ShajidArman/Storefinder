@@ -8,28 +8,24 @@
     <meta name="description" content="Web site created using create-react-app" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-
-    <!-- ✅ Allow Only fester.com.mx -->
+    
+    <!-- ✅ Block Direct Access on Netlify but Allow Fester Website -->
     <script>
       setTimeout(() => {
-        if (window.self !== window.top) {
-          try {
-            const referer = document.referrer || "";
-            const isAllowed = referer.includes("fester.com.mx");
+    const isLocalhost = window.location.hostname === "localhost";
+    const isIframe = window.self !== window.top;
+    const referer = document.referrer || "";
 
-            if (!isAllowed) {
-              document.body.innerHTML = "<h1>Access Denied</h1>"; // ❌ Block Unauthorized Users
-              throw new Error("Blocked unauthorized iframe access.");
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }, 500); // ✅ Short delay for Safari to load referrer properly
+    // ✅ Skip restrictions for localhost or when embedded from fester.com.mx
+    if (!isLocalhost && !isIframe && !referer.includes("fester.com.mx")) {
+      document.body.innerHTML = "<h1>Access Restricted</h1>";
+      throw new Error("Blocked unauthorized direct access.");
+    }
+  }, 50); // ⏱️ Decreased delay to prevent map flash
     </script>
 
-    <!-- ✅ Disable Right-Click & Basic DevTools Blocking -->
-    <script>
+     <!-- ✅ Disable Right-Click & Basic DevTools Blocking -->
+     <script>
       document.addEventListener("contextmenu", (event) => event.preventDefault());
 
       document.addEventListener("keydown", (event) => {
@@ -39,10 +35,9 @@
       });
     </script>
 
-    <!-- ✅ Security Headers -->
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://www.fester.com.mx;">
+    
 
-    <title>Secure Store Locator</title>
+    <title>App</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
